@@ -22,7 +22,10 @@ where
     result
 }
 
-fn combinations3(mut nums: &[u32]) -> Vec<(u32, u32, u32)> {
+fn combinations3<T>(mut nums: &[T]) -> Vec<(T, T, T)>
+where
+    T: Copy,
+{
     let mut result = vec![];
     loop {
         match nums.split_first() {
