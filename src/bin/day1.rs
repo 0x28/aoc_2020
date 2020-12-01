@@ -67,12 +67,13 @@ fn solution_b(nums: &[u32]) -> Option<u32> {
 
     None
 }
+
 fn read_input_file() -> Vec<u32> {
     let input = fs::read_to_string(input_file("day1.txt"));
 
     input
         .expect("couldn't read input file")
-        .split("\n")
+        .lines()
         .map(str::parse)
         .flatten() // throw away Err values
         .collect()
