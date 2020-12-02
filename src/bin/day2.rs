@@ -45,8 +45,8 @@ fn part1() -> usize {
 
 fn password_valid2(entry: &PasswordEntry) -> bool {
     let (idx1, idx2, character, passwd) = entry;
-    let first = passwd.chars().nth(idx1-1).unwrap_or_default();
-    let second = passwd.chars().nth(idx2-1).unwrap_or_default();
+    let first = passwd.chars().nth(idx1 - 1).unwrap_or_default();
+    let second = passwd.chars().nth(idx2 - 1).unwrap_or_default();
 
     (first == *character) ^ (second == *character)
 }
@@ -70,5 +70,11 @@ fn test_parse_line() {
     assert_eq!(
         password_valid(&parse_line("2-9 c: ccccccccc").unwrap()),
         true
+    );
+    assert_eq!(password_valid2(&parse_line("1-3 a: abcde").unwrap()), true);
+    assert_eq!(password_valid2(&parse_line("1-3 b: cdefg").unwrap()), false);
+    assert_eq!(
+        password_valid2(&parse_line("2-9 c: ccccccccc").unwrap()),
+        false
     );
 }
