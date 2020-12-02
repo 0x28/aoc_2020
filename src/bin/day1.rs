@@ -45,27 +45,19 @@ where
 }
 
 fn solution_a(nums: &[u32]) -> Option<u32> {
-    for result in combinations(nums)
+    combinations(nums)
         .into_iter()
         .filter(|(a, b)| a + b == 2020)
         .map(|(a, b)| a * b)
-    {
-        return Some(result);
-    }
-
-    None
+        .nth(0)
 }
 
 fn solution_b(nums: &[u32]) -> Option<u32> {
-    for result in combinations3(nums)
+    combinations3(nums)
         .into_iter()
         .filter(|(a, b, c)| a + b + c == 2020)
         .map(|(a, b, c)| a * b * c)
-    {
-        return Some(result);
-    }
-
-    None
+        .nth(0)
 }
 
 fn read_input_file() -> Vec<u32> {
