@@ -7,7 +7,7 @@ type PasswordEntry = (usize, usize, char, String);
 fn parse_line(line: &str) -> Option<PasswordEntry> {
     let mut token: Vec<&str> = line.split_whitespace().collect();
     let passwd = token.pop()?;
-    let character = token.pop()?.chars().nth(0)?;
+    let character = token.pop()?.chars().next()?;
     let range: Vec<&str> = token.pop()?.split('-').collect();
 
     Some((

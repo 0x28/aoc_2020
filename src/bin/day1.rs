@@ -7,16 +7,11 @@ where
     T: Copy,
 {
     let mut result = vec![];
-    loop {
-        match nums.split_first() {
-            Some((first, rest)) => {
-                for pair in rest.iter().map(|elem| (*first, *elem)) {
-                    result.push(pair)
-                }
-                nums = rest;
-            }
-            None => break,
+    while let Some((first, rest)) = nums.split_first() {
+        for pair in rest.iter().map(|elem| (*first, *elem)) {
+            result.push(pair)
         }
+        nums = rest;
     }
 
     result
@@ -27,21 +22,15 @@ where
     T: Copy,
 {
     let mut result = vec![];
-    loop {
-        match nums.split_first() {
-            Some((first, rest)) => {
-                for triplet in
-                    combinations(rest).iter().map(|(b, c)| (*first, *b, *c))
-                {
-                    result.push(triplet)
-                }
-                nums = rest;
-            }
-            None => break,
+    while let Some((first, rest)) = nums.split_first() {
+        for triplet in combinations(rest).iter().map(|(b, c)| (*first, *b, *c))
+        {
+            result.push(triplet)
         }
+        nums = rest;
     }
 
-    return result;
+    result
 }
 
 fn solution_a(nums: &[u32]) -> Option<u32> {
@@ -49,7 +38,7 @@ fn solution_a(nums: &[u32]) -> Option<u32> {
         .into_iter()
         .filter(|(a, b)| a + b == 2020)
         .map(|(a, b)| a * b)
-        .nth(0)
+        .next()
 }
 
 fn solution_b(nums: &[u32]) -> Option<u32> {
@@ -57,7 +46,7 @@ fn solution_b(nums: &[u32]) -> Option<u32> {
         .into_iter()
         .filter(|(a, b, c)| a + b + c == 2020)
         .map(|(a, b, c)| a * b * c)
-        .nth(0)
+        .next()
 }
 
 fn read_input_file() -> Vec<u32> {
