@@ -48,11 +48,8 @@ fn valid_passport(passport: &HashMap<String, String>) -> bool {
 
     let (height, unit) = hgt.split_at(hgt.len() - 2);
     let height = height.parse::<u32>();
-    let hgt_ok = match (height, unit) {
-        (Ok(value), "cm") => value >= 150 && value <= 193,
-        (Ok(value), "in") => value >= 59 && value <= 76,
-        _ => false,
-    };
+    let hgt_ok =
+        matches!((height, unit), (Ok(150..=193), "cm") | (Ok(59..=76), "in"));
 
     let hcl = &passport["hcl"];
     let hcl_ok = hcl.starts_with('#')
@@ -65,9 +62,9 @@ fn valid_passport(passport: &HashMap<String, String>) -> bool {
     let pid_ok = passport["pid"].len() == 9
         && passport["pid"].chars().all(char::is_numeric);
 
-    (byr >= 1920 && byr <= 2002)
-        && (iyr >= 2010 && iyr <= 2020)
-        && (eyr >= 2020 && eyr <= 2030)
+    (1920..=2002).contains(&byr)
+        && (2010..=2020).contains(&iyr)
+        && (2020..=2030).contains(&eyr)
         && (hgt_ok && hcl_ok && ecl_ok && pid_ok)
 }
 
