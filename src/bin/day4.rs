@@ -11,13 +11,10 @@ fn parse_passports(batch: &str) -> Passports {
     for passport in batch.split("\n\n") {
         let mut map = HashMap::new();
         for attribute in passport.split_whitespace() {
-            if let [key, value, ..] = attribute
-                .split(':')
-                .map(str::to_owned)
-                .collect::<Vec<String>>()
-                .as_slice()
+            if let [key, value, ..] =
+                attribute.split(':').collect::<Vec<&str>>().as_slice()
             {
-                map.insert(key.clone(), value.clone());
+                map.insert(String::from(*key), String::from(*value));
             }
         }
         passports.push(map);
