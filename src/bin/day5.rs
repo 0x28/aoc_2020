@@ -24,9 +24,10 @@ fn part2(passes: &str) -> usize {
     }
 
     for idx in 0..seats.len() {
-        match (seats.get(idx), seats.get(idx + 1), seats.get(idx + 2)) {
-            (Some(true), Some(false), Some(true)) => return idx + 1,
-            _ => (),
+        if let (Some(true), Some(false), Some(true)) =
+            (seats.get(idx), seats.get(idx + 1), seats.get(idx + 2))
+        {
+            return idx + 1;
         }
     }
 
