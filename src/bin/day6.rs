@@ -2,29 +2,27 @@ use aoc_2020::input_file;
 use std::collections::HashSet;
 use std::fs;
 
-type Groups = Vec<HashSet<char>>;
-
-fn parse(groups: &str) -> Groups {
+fn part1(groups: &str) -> usize {
     groups
         .split("\n\n")
-        .map(|g| g.chars().filter(|c| c.is_alphabetic()).collect())
-        .collect()
-}
-
-fn part1(groups: &[HashSet<char>]) -> usize {
-    groups.iter().map(HashSet::len).sum()
+        .map(|g| {
+            g.chars()
+                .filter(|c| c.is_alphabetic())
+                .collect::<HashSet<char>>()
+                .len()
+        })
+        .sum()
 }
 
 fn part2(groups: &str) -> usize {
     groups
         .split("\n\n")
         .map(|g| {
-            ('a'..='z')
-                .filter(|&c| {
-                    // check if every line contains the character c
-                    g.chars().filter(|&x| x == c).count() == g.lines().count()
+            g.lines()
+                .fold(('a'..='z').collect(), |set: HashSet<char>, line| {
+                    set.intersection(&line.chars().collect()).copied().collect()
                 })
-                .count()
+                .len()
         })
         .sum()
 }
@@ -32,8 +30,7 @@ fn part2(groups: &str) -> usize {
 fn main() {
     let input =
         fs::read_to_string(input_file("day6.txt")).expect("file not found!");
-    let groups = parse(&input);
-    println!("part1 = {}", part1(&groups));
+    println!("part1 = {}", part1(&input));
     println!("part2 = {}", part2(&input));
 }
 
@@ -56,6 +53,6 @@ a
 
 b";
 
-    assert_eq!(part1(&parse(example)), 11);
+    assert_eq!(part1(&example), 11);
     assert_eq!(part2(example), 6);
 }
