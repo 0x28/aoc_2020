@@ -83,8 +83,6 @@ dark violet bags contain no other bags.
 ";
     let example2 = parse(example2);
 
-    // assert_eq!(example, HashMap::new());
-
     assert_eq!(part1(&example1), 4);
     assert_eq!(part2(&example1), 32);
     assert_eq!(part2(&example2), 126);
