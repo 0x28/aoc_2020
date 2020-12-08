@@ -13,7 +13,7 @@ fn parse(input: &str) -> Bags {
         {
             let inner_bags = rest
                 .windows(3)
-                .map::<Result<(u32, String), ParseIntError>, _>(|slice| {
+                .map::<Result<_, ParseIntError>, _>(|slice| {
                     Ok((
                         slice[0].parse::<u32>()?,
                         format!("{} {}", slice[1], slice[2]),
