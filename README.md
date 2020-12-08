@@ -9,3 +9,4 @@ My solutions for the Advent of Code 2020.
 - [day 5](src/bin/day5.rs)
 - [day 6](src/bin/day6.rs)
 - [day 7](src/bin/day7.rs)
+- [day 8](src/bin/day8.rs)
