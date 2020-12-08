@@ -30,7 +30,7 @@ fn parse(input: &str) -> Vec<Instruction> {
         .collect()
 }
 
-fn part1(prog: &Vec<Instruction>) -> (bool, i64) {
+fn part1(prog: &[Instruction]) -> (bool, i64) {
     let mut pos_lookup = vec![false; prog.len()];
     let mut acc = 0i64;
     let mut pc = 0i64;
