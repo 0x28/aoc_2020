@@ -41,17 +41,21 @@ fn part1(nums: &[i32], preamble: usize) -> i32 {
 
 fn part2(nums: &[i32], preamble: usize) -> i32 {
     let mut begin = 0;
-    let mut end = 1;
-    let mut sum: i32;
+    let mut end = 0;
+    let mut sum = 0;
     let weakness = part1(nums, preamble);
 
     loop {
-        sum = nums[begin..end].iter().sum();
-
         match sum.cmp(&weakness) {
-            Ordering::Greater => begin += 1,
+            Ordering::Greater => {
+                sum -= nums[begin];
+                begin += 1;
+            }
             Ordering::Equal => break,
-            Ordering::Less => end += 1,
+            Ordering::Less => {
+                sum += nums[end];
+                end += 1;
+            }
         }
     }
 
