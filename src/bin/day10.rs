@@ -23,29 +23,33 @@ fn part1(nums: &[u64]) -> u64 {
     ones * threes
 }
 
-fn part2(memoize: &mut HashMap<u64, u64>, nums: &[u64]) -> u64 {
-    if nums.len() == 1 {
-        return 1;
+fn part2(nums: &[u64]) -> u64 {
+    fn helper(memoize: &mut HashMap<u64, u64>, nums: &[u64]) -> u64 {
+        if nums.len() == 1 {
+            return 1;
+        }
+
+        if let Some(&result) = memoize.get(&nums[0]) {
+            return result;
+        }
+
+        let sum = (1..=3)
+            .map(|i| {
+                if nums.get(i)? - nums.get(0)? <= 3 {
+                    Some(helper(memoize, &nums[i..]))
+                } else {
+                    None
+                }
+            })
+            .flatten()
+            .sum();
+
+        memoize.insert(nums[0], sum);
+
+        sum
     }
 
-    if let Some(&result) = memoize.get(&nums[0]) {
-        return result;
-    }
-
-    let sum = (1..=3)
-        .map(|i| {
-            if nums.get(i)? - nums.get(0)? <= 3 {
-                Some(part2(memoize, &nums[i..]))
-            } else {
-                None
-            }
-        })
-        .flatten()
-        .sum();
-
-    memoize.insert(nums[0], sum);
-
-    sum
+    helper(&mut HashMap::new(), nums)
 }
 
 fn main() {
@@ -53,7 +57,7 @@ fn main() {
     let input = parse(&input);
 
     println!("part1 = {}", part1(&input));
-    println!("part2 = {}", part2(&mut HashMap::new(), &input));
+    println!("part2 = {}", part2(&input));
 }
 
 #[test]
@@ -109,6 +113,6 @@ fn test_day10() {
     let example2 = parse(example2);
 
     assert_eq!(part1(&example1), 220);
-    assert_eq!(part2(&mut HashMap::new(), &example1), 19208);
-    assert_eq!(part2(&mut HashMap::new(), &example2), 8);
+    assert_eq!(part2(&example1), 19208);
+    assert_eq!(part2(&example2), 8);
 }
