@@ -34,14 +34,13 @@ fn part2(memoize: &mut HashMap<u64, u64>, nums: &[u64]) -> u64 {
         return memoize[&nums[0]];
     }
 
-    if nums.len() >= 2 && nums[1] - nums[0] <= 3 {
-        sum += part2(memoize, &nums[1..]);
-    }
-    if nums.len() >= 3 && nums[2] - nums[0] <= 3 {
-        sum += part2(memoize, &nums[2..]);
-    }
-    if nums.len() >= 4 && nums[3] - nums[0] <= 3 {
-        sum += part2(memoize, &nums[3..]);
+    for i in 1..=3 {
+        match (nums.get(i), nums.get(0)) {
+            (Some(to), Some(from)) if to - from <= 3 => {
+                sum += part2(memoize, &nums[i..])
+            }
+            _ => break,
+        }
     }
 
     memoize.insert(nums[0], sum);
