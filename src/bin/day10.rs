@@ -4,7 +4,7 @@ use std::{collections::HashMap, fs};
 fn parse(input: &str) -> Vec<u64> {
     let mut vec: Vec<_> = input.lines().map(str::parse).flatten().collect();
     vec.push(0); // outlet
-    vec.sort();
+    vec.sort_unstable();
     vec
 }
 
@@ -24,24 +24,24 @@ fn part1(nums: &[u64]) -> u64 {
 }
 
 fn part2(memoize: &mut HashMap<u64, u64>, nums: &[u64]) -> u64 {
-    let mut sum = 0;
-
     if nums.len() == 1 {
         return 1;
     }
 
-    if memoize.contains_key(&nums[0]) {
-        return memoize[&nums[0]];
+    if let Some(&result) = memoize.get(&nums[0]) {
+        return result;
     }
 
-    for i in 1..=3 {
-        match (nums.get(i), nums.get(0)) {
-            (Some(to), Some(from)) if to - from <= 3 => {
-                sum += part2(memoize, &nums[i..])
+    let sum = (1..=3)
+        .map(|i| {
+            if nums.get(i)? - nums.get(0)? <= 3 {
+                Some(part2(memoize, &nums[i..]))
+            } else {
+                None
             }
-            _ => break,
-        }
-    }
+        })
+        .flatten()
+        .sum();
 
     memoize.insert(nums[0], sum);
 
