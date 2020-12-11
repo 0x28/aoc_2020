@@ -14,42 +14,47 @@ fn neighbors(field: &Field, (pos_x, pos_y): (usize, usize)) -> usize {
             (pos_y.checked_sub(1).unwrap_or(pos_y)..=pos_y + 1).filter_map(
                 move |y| {
                     if (pos_x, pos_y) != (x, y) {
-                        Some(*field.get(y as usize)?.get(x as usize)?)
+                        field.get(y)?.get(x)
                     } else {
                         None
                     }
                 },
             )
         })
-        .filter(|&c| c == '#')
+        .filter(|&&c| c == '#')
         .count()
 }
 
-fn part1(field: &Field) -> usize {
+fn simulate<R>(field: &Field, rule: R) -> usize
+where
+    R: Fn((usize, usize), &Field, &mut Field),
+{
     let mut current = field.to_owned();
-    let mut next = current.clone();
+    let mut next = vec![vec!['.'; current[0].len()]; current.len()];
 
-    loop {
+    while current != next {
         for y in 0..current.len() {
             for x in 0..current[y].len() {
-                let n = neighbors(&current, (x, y));
-
-                match current[y][x] {
-                    'L' if n == 0 => next[y][x] = '#',
-                    '#' if n >= 4 => next[y][x] = 'L',
-                    c => next[y][x] = c,
-                }
+                rule((x, y), &current, &mut next);
             }
         }
 
-        if current == next {
-            break;
-        } else {
-            mem::swap(&mut current, &mut next);
-        }
+        mem::swap(&mut current, &mut next);
     }
 
     current.iter().flatten().filter(|&&c| c == '#').count()
+}
+
+fn part1(field: &Field) -> usize {
+    simulate(field, |(x, y), current, next| {
+        let n = neighbors(&current, (x, y));
+
+        match current[y][x] {
+            'L' if n == 0 => next[y][x] = '#',
+            '#' if n >= 4 => next[y][x] = 'L',
+            c => next[y][x] = c,
+        }
+    })
 }
 
 fn dir(
@@ -61,10 +66,8 @@ fn dir(
     let mut x = pos_x as isize + x_step;
     let mut y = pos_y as isize + y_step;
 
-    while (field.len() as isize) > y
-        && (field[0].len() as isize) > x
-        && x >= 0
-        && y >= 0
+    while (0..field.len()).contains(&(y as usize))
+        && (0..field[0].len()).contains(&(x as usize))
     {
         match field[y as usize][x as usize] {
             '#' => return true,
@@ -95,30 +98,15 @@ fn neighbors2(field: &Field, pos: (usize, usize)) -> usize {
 }
 
 fn part2(field: &Field) -> usize {
-    let mut current = field.to_owned();
-    let mut next = current.clone();
+    simulate(field, |(x, y), current, next| {
+        let n = neighbors2(&current, (x, y));
 
-    loop {
-        for y in 0..current.len() {
-            for x in 0..current[y].len() {
-                let n = neighbors2(&current, (x, y));
-
-                match current[y][x] {
-                    'L' if n == 0 => next[y][x] = '#',
-                    '#' if n >= 5 => next[y][x] = 'L',
-                    c => next[y][x] = c,
-                }
-            }
+        match current[y][x] {
+            'L' if n == 0 => next[y][x] = '#',
+            '#' if n >= 5 => next[y][x] = 'L',
+            c => next[y][x] = c,
         }
-
-        if current == next {
-            break;
-        } else {
-            mem::swap(&mut current, &mut next);
-        }
-    }
-
-    current.iter().flatten().filter(|&&c| c == '#').count()
+    })
 }
 
 fn main() {
