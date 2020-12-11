@@ -2,9 +2,9 @@ use aoc_2020::input_file;
 use std::usize;
 use std::{fs, mem};
 
-type Field = Vec<Vec<char>>;
+type Field = [Vec<char>];
 
-fn parse(input: &str) -> Field {
+fn parse(input: &str) -> Vec<Vec<char>> {
     input.lines().map(|line| line.chars().collect()).collect()
 }
 
@@ -26,7 +26,7 @@ fn neighbors(field: &Field, (pos_x, pos_y): (usize, usize)) -> usize {
 }
 
 fn part1(field: &Field) -> usize {
-    let mut current = field.clone();
+    let mut current = field.to_owned();
     let mut next = current.clone();
 
     loop {
@@ -95,7 +95,7 @@ fn neighbors2(field: &Field, pos: (usize, usize)) -> usize {
 }
 
 fn part2(field: &Field) -> usize {
-    let mut current = field.clone();
+    let mut current = field.to_owned();
     let mut next = current.clone();
 
     loop {
