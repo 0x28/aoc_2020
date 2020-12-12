@@ -1,6 +1,6 @@
 use aoc_2020::input_file;
+use std::collections::HashMap;
 use std::fs;
-use std::{collections::HashMap, num::ParseIntError};
 
 type Bags = HashMap<String, Vec<(u32, String)>>;
 
@@ -13,9 +13,9 @@ fn parse(input: &str) -> Bags {
         {
             let inner_bags = rest
                 .windows(3)
-                .map::<Result<_, ParseIntError>, _>(|slice| {
-                    Ok((
-                        slice[0].parse::<u32>()?,
+                .map(|slice| {
+                    Some((
+                        slice[0].parse().ok()?,
                         format!("{} {}", slice[1], slice[2]),
                     ))
                 })
