@@ -43,14 +43,14 @@ fn part2(notes: &Notes) -> i64 {
     let m: i64 = notes.1.iter().map(|t| t.1).product();
 
     // chinese remainder theorem (∩ ^o^)⊃━☆゜.*
-    m - notes
+    notes
         .1
         .iter()
-        .map(|(offset, id)| {
-            let (_, _, s) = extended_euclid(*id, m / id);
+        .map(|&(offset, id)| {
+            let (_, _, s) = extended_euclid(id, m / id);
             let e = s * (m / id);
 
-            e * (*offset as i64)
+            e * -(offset as i64)
         })
         .sum::<i64>()
         .rem_euclid(m)
