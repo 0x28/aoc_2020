@@ -30,13 +30,13 @@ fn part1(notes: &Notes) -> i64 {
     id * (time - start)
 }
 
-fn euclid_algorithm(a: i64, b: i64) -> (i64, i64, i64) {
+fn extended_euclid(a: i64, b: i64) -> (i64, i64, i64) {
     if b == 0 {
         return (a, 1, 0);
     }
 
-    let (d, s, t) = euclid_algorithm(b, a.rem_euclid(b));
-    (d, t, s - (a.div_euclid(b)) * t)
+    let (old_d, old_s, old_t) = extended_euclid(b, a.rem_euclid(b));
+    (old_d, old_t, old_s - (a.div_euclid(b)) * old_t)
 }
 
 fn part2(notes: &Notes) -> i64 {
@@ -47,7 +47,7 @@ fn part2(notes: &Notes) -> i64 {
         .1
         .iter()
         .map(|(offset, id)| {
-            let (_, _, s) = euclid_algorithm(*id, m / id);
+            let (_, _, s) = extended_euclid(*id, m / id);
             let e = s * (m / id);
 
             e * (*offset as i64)
