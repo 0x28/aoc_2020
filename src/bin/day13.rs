@@ -64,37 +64,16 @@ fn main() {
 
 #[test]
 fn test_day13() {
-    let example1 = parse(
-        "\
-939
-7,13,x,x,59,x,31,19",
-    );
+    let example1 = parse("939\n7,13,x,x,59,x,31,19");
 
     assert_eq!(part1(&example1), 295);
 
-    // assert_eq!(euclid_algorithm(3, 20), (0,0,0));
-
-    let example2 = parse(
-        "\
-0
-1789,37,47,1889
-",
-    );
+    let example2 = parse("0\n1789,37,47,1889");
     assert_eq!(part2(&example2), 1202161486);
 
-    let example3 = parse(
-        "\
-0
-17,x,13,19
-",
-    );
+    let example3 = parse("0\n17,x,13,19");
     assert_eq!(part2(&example3), 3417);
 
-    let example4 = parse(
-        "\
-0
-67,7,x,59,61
-",
-    );
+    let example4 = parse("0\n67,7,x,59,61");
     assert_eq!(part2(&example4), 1261476);
 }
