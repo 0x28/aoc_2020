@@ -23,7 +23,7 @@ fn part1(notes: &Notes) -> i64 {
     let (id, time) = ids
         .iter()
         .map(|t| t.1)
-        .map(|id| (id, start + (id - start % id) % id))
+        .map(|id| (id, start + (id - start).rem_euclid(id)))
         .min_by(|a, b| a.1.cmp(&b.1))
         .unwrap();
 
