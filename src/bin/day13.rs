@@ -35,8 +35,8 @@ fn extended_euclid(a: i64, b: i64) -> (i64, i64, i64) {
         return (a, 1, 0);
     }
 
-    let (old_d, old_s, old_t) = extended_euclid(b, a.rem_euclid(b));
-    (old_d, old_t, old_s - (a.div_euclid(b)) * old_t)
+    let (old_d, old_s, old_t) = extended_euclid(b, a % b);
+    (old_d, old_t, old_s - a / b * old_t)
 }
 
 fn part2(notes: &Notes) -> i64 {
