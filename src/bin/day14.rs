@@ -116,11 +116,7 @@ fn part1(program: &[Expr]) -> u64 {
         }
     }
 
-    let mut sum = 0;
-    for (_, v) in memory {
-        sum += v;
-    }
-    sum
+    memory.values().sum()
 }
 
 fn part2(program: &[Expr]) -> u64 {
@@ -131,10 +127,8 @@ fn part2(program: &[Expr]) -> u64 {
         match expr {
             Expr::Mem(addr, value) => {
                 let xs = mask.chars().filter(|&c| c == 'X').count();
-                let n = 1 << xs;
 
-                for i in 0..n {
-                    let mut x = i;
+                for mut i in 0..(1 << xs) {
                     let mut mask_i = mask
                         .chars()
                         .zip(format!("{:036b}", *addr).chars())
@@ -145,13 +139,10 @@ fn part2(program: &[Expr]) -> u64 {
                             _ => unreachable!(),
                         })
                         .collect::<String>();
-                    while mask_i.contains('X') {
-                        mask_i = mask_i.replacen(
-                            'X',
-                            if x & 1 == 0 { "0" } else { "1" },
-                            1,
-                        );
-                        x >>= 1;
+
+                    for _ in 0..xs {
+                        mask_i = mask_i.replacen('X', &format!("{}", i & 1), 1);
+                        i >>= 1;
                     }
 
                     memory.insert(
@@ -166,11 +157,7 @@ fn part2(program: &[Expr]) -> u64 {
         }
     }
 
-    let mut sum = 0;
-    for (_, v) in memory {
-        sum += v;
-    }
-    sum
+    memory.values().sum()
 }
 
 fn main() {
