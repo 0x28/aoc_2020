@@ -1,26 +1,24 @@
-use std::collections::HashMap;
-
 fn parse(input: &str) -> Vec<usize> {
     input.split(',').flat_map(str::parse).collect()
 }
 
 fn day15(nums: &[usize], n: usize) -> usize {
-    let mut lastpos = HashMap::new();
+    let mut lastpos: Vec<i64> = vec![-1; n]; // waste memory not time ;)
 
     for (i, &n) in nums.iter().enumerate().take(nums.len() - 1) {
-        lastpos.insert(n, i);
+        lastpos[n] = i as i64;
     }
     let mut last = *nums.last().unwrap();
     let mut current = 0;
 
     for i in nums.len()..n {
-        current = if let Some(pos) = lastpos.get(&last) {
-            i - 1 - pos
+        current = if lastpos[last] >= 0 {
+            i - 1 - lastpos[last] as usize
         } else {
             0
         };
 
-        lastpos.insert(last, i - 1);
+        lastpos[last] = i as i64 - 1;
         last = current;
     }
 
