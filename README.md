@@ -16,3 +16,4 @@ My solutions for the Advent of Code 2020.
 - [day 12](src/bin/day12.rs)
 - [day 13](src/bin/day13.rs)
 - [day 14](src/bin/day14.rs)
+- [day 15](src/bin/day15.rs)
