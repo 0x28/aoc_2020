@@ -74,23 +74,23 @@ fn part2(ticket_db: &TicketDB) -> u64 {
         .filter(|ticket| {
             ticket.iter().all(|attribute| {
                 ticket_db.attributes.iter().any(|(_, ranges)| {
-                    ranges.iter().any(|r| r.contains(attribute))
+                    ranges.iter().any(|range| range.contains(attribute))
                 })
             })
         })
         .collect::<Vec<_>>();
 
-    let mut fields: Vec<_> =
+    let mut possible_attributes: Vec<_> =
         vec![HashSet::<String>::new(); ticket_db.attributes.len()];
 
-    for field in &mut fields {
-        *field = ticket_db.attributes.keys().cloned().collect();
+    for attribute in &mut possible_attributes {
+        *attribute = ticket_db.attributes.keys().cloned().collect();
     }
 
     for ticket in filtered {
-        for i in 0..fields.len() {
+        for i in 0..possible_attributes.len() {
             let value = ticket[i];
-            let possible_attributes = fields[i]
+            possible_attributes[i] = possible_attributes[i]
                 .iter()
                 .filter(|field| {
                     ticket_db
@@ -98,33 +98,34 @@ fn part2(ticket_db: &TicketDB) -> u64 {
                         .get::<String>(field)
                         .unwrap()
                         .iter()
-                        .any(|r| r.contains(&value))
+                        .any(|range| range.contains(&value))
                 })
                 .cloned()
                 .collect();
-
-            fields[i] = possible_attributes;
         }
     }
 
-    let mut result = vec!["".to_owned(); fields.len()];
-    for i in 1..=fields.len() {
-        for (pos, f) in fields.iter().enumerate().filter(|(_, c)| c.len() == i)
+    let mut real_attributes = vec!["".to_owned(); possible_attributes.len()];
+    for i in 1..=possible_attributes.len() {
+        for (pos, f) in possible_attributes
+            .iter()
+            .enumerate()
+            .filter(|(_, row_set)| row_set.len() == i)
         {
             for k in f {
-                if !result.contains(k) {
-                    result[pos] = k.to_string()
+                if !real_attributes.contains(k) {
+                    real_attributes[pos] = k.to_string()
                 }
             }
         }
     }
 
-    result
+    real_attributes
         .iter()
         .enumerate()
-        .filter_map(|(i, a)| {
-            if a.starts_with("departure") {
-                Some(ticket_db.my_ticket[i])
+        .filter_map(|(idx, attribute)| {
+            if attribute.starts_with("departure") {
+                Some(ticket_db.my_ticket[idx])
             } else {
                 None
             }
