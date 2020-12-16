@@ -36,20 +36,24 @@ fn parse_attribute(line: &str) -> (String, Vec<RangeInclusive<u64>>) {
 }
 
 fn parse(input: &str) -> TicketDB {
-    let groups = input.split("\n\n").collect::<Vec<_>>();
+    if let [attributes, my_ticket, tickets, ..] =
+        input.split("\n\n").collect::<Vec<_>>().as_slice()
+    {
+        let attributes = attributes.lines().map(parse_attribute).collect();
+        let my_ticket = my_ticket.lines().nth(1).map(parse_ticket).unwrap();
+        let tickets = tickets
+            .lines()
+            .map(parse_ticket)
+            .filter(|t| !t.is_empty())
+            .collect();
 
-    let attributes = groups[0].lines().map(parse_attribute).collect();
-    let my_ticket = groups[1].lines().nth(1).map(parse_ticket).unwrap();
-    let tickets = groups[2]
-        .lines()
-        .map(parse_ticket)
-        .filter(|t| !t.is_empty())
-        .collect();
-
-    TicketDB {
-        attributes,
-        my_ticket,
-        tickets,
+        TicketDB {
+            attributes,
+            my_ticket,
+            tickets,
+        }
+    } else {
+        unreachable!()
     }
 }
 
