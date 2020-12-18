@@ -1,6 +1,7 @@
 use aoc_2020::input_file;
 use std::fs;
 
+#[cfg(feature = "use-crates")]
 peg::parser!( grammar arithmetic() for str {
     rule number() -> u64
         = _ n:$(['0'..='9']+) _ { n.parse().unwrap() }
@@ -25,16 +26,22 @@ peg::parser!( grammar arithmetic() for str {
     rule _() = quiet!{[c if c.is_whitespace()]*}
 });
 
+#[cfg(feature = "use-crates")]
 fn part1(input: &str) -> u64 {
     input.lines().flat_map(arithmetic::calculate).sum()
 }
 
+#[cfg(feature = "use-crates")]
 fn part2(input: &str) -> u64 {
     input.lines().flat_map(arithmetic::calculate_prec).sum()
 }
 
 fn main() {
-    let input = &fs::read_to_string(input_file("day18.txt")).unwrap();
-    println!("part1 = {}", part1(input));
-    println!("part2 = {}", part2(input));
+    let _input = &fs::read_to_string(input_file("day18.txt")).unwrap();
+
+    #[cfg(feature = "use-crates")]
+    println!("part1 = {}", part1(_input));
+
+    #[cfg(feature = "use-crates")]
+    println!("part2 = {}", part2(_input));
 }
