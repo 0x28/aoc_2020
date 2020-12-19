@@ -34,7 +34,7 @@ fn parse_rule(line: &str) -> Rule {
     Rule::Alternative(alternatives)
 }
 
-fn parse_rules(input: &str) -> Vec<Rule> {
+fn parse_rules(input: &str) -> HashMap<usize, Rule> {
     let mut rules = HashMap::new();
 
     for line in input.lines() {
@@ -46,19 +46,10 @@ fn parse_rules(input: &str) -> Vec<Rule> {
         }
     }
 
-    let mut rule_vec =
-        vec![Rule::Literal(String::from("")); *rules.keys().max().unwrap() + 1];
-    let mut keys = rules.keys().copied().collect::<Vec<_>>();
-    keys.sort_unstable();
-
-    for key in keys {
-        rule_vec[key] = rules.remove(&key).unwrap();
-    }
-
-    rule_vec
+    rules
 }
 
-fn parse(input: &str) -> (Vec<Rule>, Vec<String>) {
+fn parse(input: &str) -> (HashMap<usize, Rule>, Vec<String>) {
     if let [rules, messages, ..] =
         input.split("\n\n").collect::<Vec<_>>().as_slice()
     {
@@ -75,16 +66,16 @@ fn valid(
     message: &str,
     pos: usize,
     current: &Rule,
-    rules: &[Rule],
+    rules: &HashMap<usize, Rule>,
 ) -> Option<usize> {
     match current {
         Rule::Alternative(alternatives) => {
-            for alternative in alternatives {
+            for sequence in alternatives {
                 let mut current_pos = pos;
                 let mut failed = false;
-                for idx in alternative {
+                for idx in sequence {
                     if let Some(pos) =
-                        valid(&message, current_pos, &rules[*idx], rules)
+                        valid(&message, current_pos, &rules[idx], rules)
                     {
                         current_pos = pos;
                     } else {
@@ -110,15 +101,15 @@ fn valid(
     }
 }
 
-fn valid_message(message: &str, rules: &[Rule]) -> bool {
-    if let Some(pos) = valid(message, 0, &rules[0], rules) {
+fn valid_message(message: &str, rules: &HashMap<usize, Rule>) -> bool {
+    if let Some(pos) = valid(message, 0, &rules[&0], rules) {
         pos == message.len()
     } else {
         false
     }
 }
 
-fn part1(messages: &[String], rules: &[Rule]) -> usize {
+fn part1(messages: &[String], rules: &HashMap<usize, Rule>) -> usize {
     messages
         .iter()
         .filter(|msg| valid_message(msg, rules))
