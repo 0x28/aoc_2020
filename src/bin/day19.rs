@@ -91,7 +91,7 @@ fn valid(
             }
 
             if max_pos > pos {
-                return Some(max_pos);
+                Some(max_pos)
             } else {
                 None
             }
