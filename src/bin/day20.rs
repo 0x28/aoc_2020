@@ -11,6 +11,7 @@ struct Tile {
     bottom: u64,
     left: u64,
     right: u64,
+    pixel: Vec<Vec<char>>,
 }
 
 fn border_to_number(border: &str) -> u64 {
@@ -48,6 +49,7 @@ fn parse_tile(block: &str) -> Tile {
             bottom,
             left,
             right,
+            pixel: rest.iter().map(|l| l.chars().collect()).collect(),
         }
     } else {
         unreachable!()
@@ -59,22 +61,38 @@ fn parse(input: &str) -> Vec<Tile> {
 }
 
 fn rotate(tile: &Tile) -> Tile {
+    let mut pixel = tile.pixel.clone();
+    for y in 0..pixel.len() {
+        for x in 0..pixel[y].len() {
+            pixel[y][x] = tile.pixel[pixel.len() - x - 1][y];
+        }
+    }
+
     Tile {
         id: tile.id,
         top: reverse_border(tile.left),
         right: tile.top,
         bottom: reverse_border(tile.right),
         left: tile.bottom,
+        pixel,
     }
 }
 
 fn flip(tile: &Tile) -> Tile {
+    let mut pixel = tile.pixel.clone();
+    for y in 0..pixel.len() {
+        for x in 0..pixel[y].len() {
+            pixel[y][x] = tile.pixel[y][pixel.len() - x - 1];
+        }
+    }
+
     Tile {
         id: tile.id,
         top: reverse_border(tile.top),
         bottom: reverse_border(tile.bottom),
         left: tile.right,
         right: tile.left,
+        pixel,
     }
 }
 
@@ -183,7 +201,19 @@ Tile 2311:
             left: 0b0111110010,
             right: 0b0001011001,
             bottom: 0b0011100111,
-            top: 0b0011010010
+            top: 0b0011010010,
+            pixel: vec![
+                "..##.#..#.".chars().collect(),
+                "##..#.....".chars().collect(),
+                "#...##..#.".chars().collect(),
+                "####.#...#".chars().collect(),
+                "##.##.###.".chars().collect(),
+                "##...#.###".chars().collect(),
+                ".#.#.#..##".chars().collect(),
+                "..#....#..".chars().collect(),
+                "###...#.#.".chars().collect(),
+                "..###..###".chars().collect(),
+            ]
         }
     );
 
