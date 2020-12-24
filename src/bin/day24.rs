@@ -108,14 +108,14 @@ where
                 next.insert(black_tile);
             }
         }
-        let extended_cubes = current
+        let extended_tiles = current
             .iter()
             .flat_map(neighbors_fun)
             .collect::<HashSet<_>>();
-        for inactive_cube in extended_cubes.difference(&current) {
-            let neighbors = neighbors_fun(inactive_cube);
+        for white_tile in extended_tiles.difference(&current) {
+            let neighbors = neighbors_fun(white_tile);
             if let 2 = neighbors.intersection(&current).count() {
-                next.insert(inactive_cube);
+                next.insert(white_tile);
             }
         }
 
