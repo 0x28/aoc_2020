@@ -1,5 +1,8 @@
 use aoc_2020::input_file;
-use std::{collections::HashMap, fs};
+use std::{
+    collections::{HashMap, HashSet},
+    fs,
+};
 
 #[derive(Debug, PartialEq)]
 enum Dir {
@@ -62,7 +65,7 @@ fn parse(input: &str) -> Vec<Vec<Dir>> {
     input.lines().map(parse_line).collect()
 }
 
-fn part1(dirs: Vec<Vec<Dir>>) -> usize {
+fn find_black_tiles(dirs: Vec<Vec<Dir>>) -> HashSet<(i64, i64)> {
     let mut flipped = HashMap::<(i64, i64), bool>::new();
     let ref_tile = (0, 0);
 
@@ -83,7 +86,14 @@ fn part1(dirs: Vec<Vec<Dir>>) -> usize {
         }
     }
 
-    flipped.values().filter(|status| **status).count()
+    flipped
+        .iter()
+        .filter_map(|(p, status)| if *status { Some(*p) } else { None })
+        .collect()
+}
+
+fn part1(dirs: Vec<Vec<Dir>>) -> usize {
+    find_black_tiles(dirs).len()
 }
 
 fn main() {
