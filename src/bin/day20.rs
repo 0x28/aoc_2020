@@ -141,11 +141,11 @@ fn solve_jigsaw(tiles: &[Tile]) -> HashMap<(i32, i32), Tile> {
                     unexpanded.insert(((pos.0 - 1, pos.1), orientation));
                     break;
                 } else if orientation.bottom == current_tile.top {
-                    unexpanded.insert(((pos.0, pos.1 + 1), orientation));
+                    unexpanded.insert(((pos.0, pos.1 - 1), orientation));
                     unused.remove(adjacent_tile);
                     break;
                 } else if orientation.top == current_tile.bottom {
-                    unexpanded.insert(((pos.0, pos.1 - 1), orientation));
+                    unexpanded.insert(((pos.0, pos.1 + 1), orientation));
                     unused.remove(adjacent_tile);
                     break;
                 }
@@ -169,6 +169,35 @@ fn part1(puzzle: &HashMap<(i32, i32), Tile>) -> u64 {
         * puzzle[&(max_x, min_y)].id
         * puzzle[&(min_x, max_y)].id
         * puzzle[&(min_x, min_y)].id
+}
+
+fn combine(puzzle: &HashMap<(i32, i32), Tile>) -> Vec<Vec<char>> {
+    let max_x = puzzle.iter().max_by_key(|(pos, _)| pos.0).unwrap().0 .0;
+    let max_y = puzzle.iter().max_by_key(|(pos, _)| pos.1).unwrap().0 .1;
+    let min_x = puzzle.iter().min_by_key(|(pos, _)| pos.0).unwrap().0 .0;
+    let min_y = puzzle.iter().min_by_key(|(pos, _)| pos.1).unwrap().0 .1;
+    let size: i32 = 8;
+
+    let mut picture = vec![
+        vec![' '; (size * (max_x - min_x + 1)) as usize];
+        (size * (max_y - min_y + 1)) as usize
+    ];
+
+    for y in min_y..=max_y {
+        for x in min_x..=max_x {
+            let tile = &puzzle[&(x, y)];
+
+            for t_y in 1..tile.pixel.len() - 1 {
+                for t_x in 1..tile.pixel[t_y].len() - 1 {
+                    picture[(size * (y - min_y) + (t_y - 1) as i32) as usize]
+                        [(size * (x - min_x) + (t_x - 1) as i32) as usize] =
+                        tile.pixel[t_y][t_x];
+                }
+            }
+        }
+    }
+
+    picture
 }
 
 fn main() {
@@ -213,6 +242,29 @@ Tile 2311:
                 "..#....#..".chars().collect(),
                 "###...#.#.".chars().collect(),
                 "..###..###".chars().collect(),
+            ]
+        }
+    );
+
+    assert_eq!(
+        rotate(&tile),
+        Tile {
+            id: 2311,
+            top: reverse_border(tile.left),
+            right: tile.top,
+            bottom: reverse_border(tile.right),
+            left: tile.bottom,
+            pixel: vec![
+                ".#..#####.".chars().collect(),
+                ".#.####.#.".chars().collect(),
+                "###...#..#".chars().collect(),
+                "#..#.##..#".chars().collect(),
+                "#....#.##.".chars().collect(),
+                "...##.##.#".chars().collect(),
+                ".#...#....".chars().collect(),
+                "#.#.##....".chars().collect(),
+                "##.###.#.#".chars().collect(),
+                "#..##.#...".chars().collect(),
             ]
         }
     );
@@ -332,5 +384,6 @@ Tile 3079:
 ";
 
     let tiles1 = parse(example1);
-    assert_eq!(part1(&solve_jigsaw(&tiles1)), 20899048083289);
+    let tiles1 = solve_jigsaw(&tiles1);
+    assert_eq!(part1(&tiles1), 20899048083289);
 }
