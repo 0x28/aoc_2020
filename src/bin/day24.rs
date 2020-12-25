@@ -62,7 +62,7 @@ fn parse(input: &str) -> Vec<Vec<Dir>> {
     input.lines().map(parse_line).collect()
 }
 
-fn find_black_tiles(dirs: &Vec<Vec<Dir>>) -> HashSet<(i64, i64)> {
+fn find_black_tiles(dirs: &[Vec<Dir>]) -> HashSet<(i64, i64)> {
     let mut flipped = HashMap::<(i64, i64), bool>::new();
     let ref_tile = (0, 0);
 
@@ -89,7 +89,7 @@ fn find_black_tiles(dirs: &Vec<Vec<Dir>>) -> HashSet<(i64, i64)> {
         .collect()
 }
 
-fn part1(dirs: &Vec<Vec<Dir>>) -> usize {
+fn part1(dirs: &[Vec<Dir>]) -> usize {
     find_black_tiles(&dirs).len()
 }
 
@@ -143,7 +143,7 @@ fn neighbors((pos_x, pos_y): &(i64, i64)) -> HashSet<(i64, i64)> {
         .collect()
 }
 
-fn part2(dirs: &Vec<Vec<Dir>>) -> usize {
+fn part2(dirs: &[Vec<Dir>]) -> usize {
     let black_tiles = find_black_tiles(&dirs);
 
     conway(&black_tiles, neighbors)
