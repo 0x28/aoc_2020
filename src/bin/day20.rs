@@ -60,13 +60,31 @@ fn parse(input: &str) -> Vec<Tile> {
     input.split("\n\n").map(parse_tile).collect()
 }
 
-fn rotate(tile: &Tile) -> Tile {
-    let mut pixel = tile.pixel.clone();
-    for y in 0..pixel.len() {
-        for x in 0..pixel[y].len() {
-            pixel[y][x] = tile.pixel[pixel.len() - x - 1][y];
+fn rotate_pixel(block: &[Vec<char>]) -> Vec<Vec<char>> {
+    let mut rblock = vec![vec![' '; block.len()]; block[0].len()];
+
+    for y in 0..rblock.len() {
+        for x in 0..rblock[y].len() {
+            rblock[y][x] = block[rblock[y].len() - x - 1][y];
         }
     }
+
+    rblock
+}
+
+fn flip_pixel(block: &[Vec<char>]) -> Vec<Vec<char>> {
+    let mut rblock = block.to_vec();
+    for y in 0..rblock.len() {
+        for x in 0..rblock[y].len() {
+            rblock[y][x] = block[y][rblock[y].len() - x - 1];
+        }
+    }
+
+    rblock
+}
+
+fn rotate(tile: &Tile) -> Tile {
+    let pixel = rotate_pixel(&tile.pixel);
 
     Tile {
         id: tile.id,
@@ -79,12 +97,7 @@ fn rotate(tile: &Tile) -> Tile {
 }
 
 fn flip(tile: &Tile) -> Tile {
-    let mut pixel = tile.pixel.clone();
-    for y in 0..pixel.len() {
-        for x in 0..pixel[y].len() {
-            pixel[y][x] = tile.pixel[y][pixel.len() - x - 1];
-        }
-    }
+    let pixel = flip_pixel(&tile.pixel);
 
     Tile {
         id: tile.id,
