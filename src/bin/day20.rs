@@ -213,11 +213,72 @@ fn combine(puzzle: &HashMap<(i32, i32), Tile>) -> Vec<Vec<char>> {
     picture
 }
 
+fn water_roughness(sea: &[Vec<char>]) -> usize {
+    let sea_snake_r0: Vec<Vec<char>> = vec![
+        "                  # ".chars().collect(),
+        "#    ##    ##    ###".chars().collect(),
+        " #  #  #  #  #  #   ".chars().collect(),
+    ];
+    let sea_snake_r1 = rotate_pixel(&sea_snake_r0);
+    let sea_snake_r2 = rotate_pixel(&sea_snake_r1);
+    let sea_snake_r3 = rotate_pixel(&sea_snake_r2);
+
+    let sea_snakes = vec![
+        flip_pixel(&sea_snake_r0),
+        flip_pixel(&sea_snake_r1),
+        flip_pixel(&sea_snake_r2),
+        flip_pixel(&sea_snake_r3),
+        sea_snake_r0,
+        sea_snake_r1,
+        sea_snake_r2,
+        sea_snake_r3,
+    ];
+
+    let mut snake_count = 0;
+
+    for sea_snake in sea_snakes {
+        for y_offset in 0..sea.len() - sea_snake.len() {
+            for x_offset in 0..sea[0].len() - sea_snake[0].len() {
+                let snake_search = || {
+                    for y in 0..sea_snake.len() {
+                        for x in 0..sea_snake[0].len() {
+                            match (
+                                sea_snake[y][x],
+                                sea[y_offset + y][x_offset + x],
+                            ) {
+                                ('#', '.') => return false,
+                                (_, _) => (),
+                            }
+                        }
+                    }
+                    true
+                };
+
+                if snake_search() {
+                    snake_count += 1;
+                }
+            }
+        }
+
+        if snake_count > 0 {
+            break;
+        }
+    }
+
+    let snake_size = 15;
+
+    sea.iter()
+        .map(|line| line.iter().filter(|c| **c == '#').count())
+        .sum::<usize>()
+        - snake_count * snake_size
+}
+
 fn main() {
     let input = fs::read_to_string(input_file("day20.txt")).unwrap();
     let tiles = parse(&input);
     let tiles = solve_jigsaw(&tiles);
     println!("part1 = {}", part1(&tiles));
+    println!("part2 = {}", water_roughness(&combine(&tiles)));
 }
 
 #[test]
@@ -399,4 +460,6 @@ Tile 3079:
     let tiles1 = parse(example1);
     let tiles1 = solve_jigsaw(&tiles1);
     assert_eq!(part1(&tiles1), 20899048083289);
+
+    assert_eq!(water_roughness(&combine(&tiles1)), 273);
 }
