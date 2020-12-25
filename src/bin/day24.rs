@@ -180,5 +180,5 @@ neswnwewnwnwseenwseesewsenwsweewe
 wseweeenwnesenwwwswnew
 ";
 
-    assert_eq!(part1(parse(example1)), 10);
+    assert_eq!(part1(&parse(example1)), 10);
 }
